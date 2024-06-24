@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facial Expression Viewer</title>
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"></script>
+    <script>
+
+        
+
+        // MQTT 服务器连接参数
+        var MQTT_HOST = "192.168.1.124";
+        var MQTT_PORT = 1884;
+        var MQTT_TOPIC = "facial_expression";
+
+        // MQTT 客户端
+        var client;
+
+        // 当 MQTT 客户端连接成功时的回调函数
+        function onConnect() {
+            console.log("Connected to MQTT broker");
+            client.subscribe(MQTT_TOPIC);
+        }
+
+        // 当从 MQTT 服务器收到消息时的回调函数
+        function onMessageArrived(message) {
+            console.log("Received message: ", message);
+            console.log("Payload: ", message.payloadString);
+            var data = JSON.parse(message.payloadString);
+            console.log("Parsed data: ", data);
+
+
+            updateExpressionDisplay(data.type,data.file,data.image);
+            // updateExpressionDisplay(data.image);
+        }
+
+
+        // 更新表情显示
+        function updateExpressionDisplay(expression,file,imageData) {
+            var expressionDisplay= document.getElementById("expressionDisplay","filenDisplay","imageDisplay");
+            expressionDisplay.textContent = "Detected Expression: " + expression;
+            fileDisplay.textContent = "Detected file: " + file;
+        }
+  
+        function connect() {
+            client = new Paho.MQTT.Client(MQTT_HOST, Number(MQTT_PORT), "web-client-" + parseInt(Math.random() * 100000, 100000000000000));
+            client.onConnectionLost = onConnectionLost;
+            client.onMessageArrived = onMessageArrived;
+            client.connect({ onSuccess: onConnect });
+        }
+
+        // 连接丢失时的回调函数
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("Connection lost: " + responseObject.errorMessage);
+            }
+        }
+
+        // 页面加载时连接 MQTT 服务器
+        window.onload = connect;
+    </script>
+</head>
+<body>
+
+
+    <h1>Facial Expression Viewer</h1>
+    <h2 id="expressionDisplay">Detecting facial expression...</h2>
+    <h2 id="fileDisplay">Detecting file...</h2>
+    <!-- <img src="./input/sad.jpg" alt="Detected Image"> -->
+
+    <div class="image-container" id="image-container">
+        <!-- 图片将在此处动态生成 -->
+    </div>
+
+    <script>
+        // 替换为你的图片所在文件夹的路径
+        const imageFolder = './input/';
+
+        // 获取文件夹下的所有图片文件
+        fetch(imageFolder)
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+                const images = doc.querySelectorAll('a[href$=".jpg"], a[href$=".png"], a[href$=".gif"]');
+
+                const imageContainer = document.getElementById('image-container');
+                images.forEach(image => {
+                    const imageUrl = `${image.getAttribute('href')}`;
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.alt = "Detected facial expression"; // 添加 alt 属性
+                    img.width = "300"; 
+                    imageContainer.appendChild(img);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching images:', error);
+            });
+    </script>
+</body>
+</html>

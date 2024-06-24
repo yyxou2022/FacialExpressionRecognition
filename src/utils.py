@@ -171,15 +171,26 @@ def index2emotion(index=0, kind='cn'):
     :param index:
     :return:
     """
+    # emotions = {
+    #     '发怒': 'anger',
+    #     '厌恶': 'disgust',
+    #     '恐惧': 'fear',
+    #     '开心': 'happy',
+    #     '伤心': 'sad',
+    #     '惊讶': 'surprised',
+    #     '中性': 'neutral',
+    #     '蔑视': 'contempt'
+
+    # }
     emotions = {
-        '发怒': 'anger',
-        '厌恶': 'disgust',
-        '恐惧': 'fear',
-        '开心': 'happy',
-        '伤心': 'sad',
-        '惊讶': 'surprised',
-        '中性': 'neutral',
-        '蔑视': 'contempt'
+        'anger': '发怒',
+        'disgust': '厌恶',
+        'fear': '恐惧',
+        'happy': '开心',
+        'sad': '伤心',
+        'surprised': '惊讶',
+        'neutral': '中性',
+        'contempt': '蔑视'
 
     }
     if kind == 'cn':

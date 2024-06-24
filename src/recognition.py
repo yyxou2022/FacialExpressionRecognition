@@ -6,8 +6,8 @@ desc: 本模块为表情预测处理模块
 import os
 import cv2
 import numpy as np
-from utils import index2emotion, expression_analysis, cv2_img_add_text
-from blazeface import blaze_detect
+from src.utils import index2emotion, expression_analysis, cv2_img_add_text
+from src.blazeface import blaze_detect
 
 
 
@@ -66,7 +66,7 @@ def predict_expression(img_path, model):
     """
     对图中n个人脸进行表情预测
     :param img_path:
-    :return:
+    :return=]
     """
 
     border_color = (0, 0, 0)  # 黑框框
@@ -100,5 +100,6 @@ def predict_expression(img_path, model):
 if __name__ == '__main__':
     from model import CNN3
     model = CNN3()
-    model.load_weights('./models/cnn3_best_weights.h5')
-    predict_expression('./input/test/happy2.png', model)
+    model.load_weights('../models/cnn3_best_weights.h5')
+    predict_expression('/home/yy/Desktop/projects/game/FacialExpressionRecognition/input/test/1.mp4', model)
+    # predict_expression('./input/sad.jpg', model)
